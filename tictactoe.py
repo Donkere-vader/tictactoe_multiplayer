@@ -1,4 +1,4 @@
-from tkinter import Label, Tk, Button, Entry, Frame
+from tkinter import Label, Tk, Button, Entry, Frame, messagebox
 import socket
 import threading
 import json
@@ -9,22 +9,39 @@ PORT = 69420
 
 
 class Client:
-    def __init__(self, host: bool):
+    def __init__(self, host: bool, game: game):
         self.host = host
+        self.parent_game = game
+        self.c = None
 
     def start(self):
         pass
 
+    def handle_data(self, data):
+        if 'move':
+            # if there is move data, place update the board
+            self.parent_game.board[data['move']['y']][data['move']['x']] = self.parent_game.on_turn
+        if 'onturn' in data:
+            # if there is another player on turn update the onturn
+            self.parent_game=  data['onturn']
+        if 'restart' in data:
+            self.parent_game.start(on_turn = data['restart']['onturn'])
+        
+
     def send(self, data):
         data = bytes(json.dumps(data), "utf-8")
-        self.c.send()
+        self.c.send(data)
 
 class Game(Tk):
     def __init__(self):
         super().__init__(screenName="Tic tac toe")
-        self.board = [[0 for i in range(3)] for i in range(3)]
-        self.on_turn = 1
+        self.client = None
+        self.start()
         self.show_menu()
+
+    def start(self, on_turn = 1):
+        self.board = [[0 for i in range(3)] for i in range(3)]
+        self.on_turn = on_turn
 
     def draw_board(self):
         pass
@@ -96,7 +113,13 @@ class Game(Tk):
         pass
 
     def join(self):
-        pass
+        global IP 
+        
+        try:
+            IP = int(self.ip_entry.get())
+        except ValueError:
+            messagebox.showerror("ERROR", "Invalid IP")
+            self.join_screen()
 
 if __name__ == "__main__":
     global game
