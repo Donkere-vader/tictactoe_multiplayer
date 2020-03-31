@@ -33,21 +33,69 @@ class Game(Tk):
         pass
 
     def show_menu(self):
-        top_frame = Frame()
-        top_frame.grid()
+        self.top_frame = Frame()
+        self.top_frame.grid()
 
-        options_frame = Frame()
-        options_frame.grid()
+        self.options_frame = Frame()
+        self.options_frame.grid()
 
-        Label(
-            master=top_frame,
-            "test"
-        ).grid()
+        self.title_lbl = Label(
+            master=self.top_frame,
+            text="Tic tac toe",
+            font="arial 20"
+        )
+        self.title_lbl.grid()
+
+        self.join_button = Button(
+            master=self.options_frame,
+            text="Join",
+            font='arial 15',
+            width=10,
+            command= lambda : self.join_screen()
+        )
+        self.join_button.grid(row=0, column=0)
+
+        self.host_button = Button(
+            master=self.options_frame,
+            text="Host",
+            font='arial 15',
+            width=10,
+            command= lambda : self.host()
+        )
+        self.host_button.grid(row=0, column=1)
 
     def join_screen(self):
-        pass
+        self.options_frame.destroy()
+        self.title_lbl.config(text="Join")
+
+        self.entries_frame = Frame()
+        self.entries_frame.grid()
+
+        self.entry_lbl = Label(
+            master=self.entries_frame,
+            text="IP adress:"
+        )
+        self.entry_lbl.grid()
+
+        self.ip_entry = Entry(
+            master=self.entries_frame,
+            font='arial 15',
+            width=20
+        )
+        self.ip_entry.grid()
+
+        self.join_button = Button(
+            text="join",
+            font='arial 15',
+            width=20,
+            command= lambda : self.join()
+        )
+        self.join_button.grid()
 
     def host(self):
+        pass
+
+    def join(self):
         pass
 
 if __name__ == "__main__":
